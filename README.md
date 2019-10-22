@@ -1,0 +1,2 @@
+# NaroReader_inokinn
+なろう小説APIを叩いて取ってくる
