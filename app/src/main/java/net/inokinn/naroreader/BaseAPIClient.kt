@@ -3,12 +3,10 @@ package net.inokinn.naroreader
 import com.github.kittinunf.fuel.core.FuelError
 import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.fuel.httpGet
-import com.github.kittinunf.fuel.json.FuelJson
-import com.github.kittinunf.fuel.json.responseJson
 import com.github.kittinunf.result.Result
 
 interface APIClientCallback {
-    fun doSucceed(result: ArrayList<Any>)
+    fun doSucceed(result: List<Any>)
     fun doFailed()
 }
 
@@ -33,7 +31,7 @@ open class BaseAPIClient(params: Map<String, String>?, callback: APIClientCallba
             }
         }
 
-        this.targetUrl.httpGet().responseJson { request, response, result ->
+        this.targetUrl.httpGet().responseString { request, response, result ->
             when (result) {
                 is Result.Success -> {
                     this.requestSucceed(response, result)
@@ -48,10 +46,10 @@ open class BaseAPIClient(params: Map<String, String>?, callback: APIClientCallba
     /**
      * リクエスト成功時に呼ばれる
      */
-    open fun requestSucceed(response: Response, result: Result<FuelJson, FuelError>) {}
+    open fun requestSucceed(response: Response, result: Result<String, FuelError>) {}
 
     /**
      * リクエスト失敗時に呼ばれる
      */
-    open fun requestFailed(response: Response, result: Result<FuelJson, FuelError>) {}
+    open fun requestFailed(response: Response, result: Result<String, FuelError>) {}
 }

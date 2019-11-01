@@ -113,7 +113,7 @@ class ItemListActivity : AppCompatActivity() {
             val contentView: TextView = view.content
         }
 
-        override fun doSucceed(result: ArrayList<Any>) {
+        override fun doSucceed(result: List<Any>) {
             result.forEachIndexed { i, novel ->
                 this.values[i].content = (novel as Novel).title
             }
