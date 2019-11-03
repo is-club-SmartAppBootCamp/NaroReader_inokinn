@@ -51,7 +51,7 @@ class ItemListActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView(recyclerView: RecyclerView) {
-        recyclerView.adapter = SimpleItemRecyclerViewAdapter(this, DummyContent.ITEMS, twoPane)
+        recyclerView.adapter = SimpleItemRecyclerViewAdapter(this, listOf(), twoPane)
         val apiClient = NaroRankingAPIClient(mapOf("out" to "json", "order" to "weeklypoint"),
             recyclerView.adapter as SimpleItemRecyclerViewAdapter
         )
@@ -60,7 +60,7 @@ class ItemListActivity : AppCompatActivity() {
 
     class SimpleItemRecyclerViewAdapter(
         private val parentActivity: ItemListActivity,
-        private val values: List<DummyContent.DummyItem>,
+        private var values: List<Novel>,
         private val twoPane: Boolean
     ) :
         RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder>(), APIClientCallback {
@@ -69,23 +69,23 @@ class ItemListActivity : AppCompatActivity() {
 
         init {
             onClickListener = View.OnClickListener { v ->
-                val item = v.tag as DummyContent.DummyItem
-                if (twoPane) {
-                    val fragment = ItemDetailFragment().apply {
-                        arguments = Bundle().apply {
-                            putString(ItemDetailFragment.ARG_ITEM_ID, item.id)
-                        }
-                    }
-                    parentActivity.supportFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.item_detail_container, fragment)
-                        .commit()
-                } else {
-                    val intent = Intent(v.context, ItemDetailActivity::class.java).apply {
-                        putExtra(ItemDetailFragment.ARG_ITEM_ID, item.id)
-                    }
-                    v.context.startActivity(intent)
-                }
+                val item = v.tag as Novel
+//                if (twoPane) {
+//                    val fragment = ItemDetailFragment().apply {
+//                        arguments = Bundle().apply {
+//                            putString(ItemDetailFragment.ARG_ITEM_ID, item.id)
+//                        }
+//                    }
+//                    parentActivity.supportFragmentManager
+//                        .beginTransaction()
+//                        .replace(R.id.item_detail_container, fragment)
+//                        .commit()
+//                } else {
+//                    val intent = Intent(v.context, ItemDetailActivity::class.java).apply {
+//                        putExtra(ItemDetailFragment.ARG_ITEM_ID, item.id)
+//                    }
+//                    v.context.startActivity(intent)
+//                }
             }
         }
 
@@ -97,8 +97,8 @@ class ItemListActivity : AppCompatActivity() {
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val item = values[position]
-            holder.idView.text = item.id
-            holder.contentView.text = item.content
+            holder.idView.text = (position + 1).toString()
+            holder.contentView.text = item.title
 
             with(holder.itemView) {
                 tag = item
@@ -114,9 +114,7 @@ class ItemListActivity : AppCompatActivity() {
         }
 
         override fun doSucceed(result: List<Any>) {
-            result.forEachIndexed { i, novel ->
-                this.values[i].content = (novel as Novel).title
-            }
+            values = result as List<Novel>
             notifyDataSetChanged()
         }
 
